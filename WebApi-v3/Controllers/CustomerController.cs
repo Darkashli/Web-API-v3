@@ -15,50 +15,53 @@ namespace WebApi_v3.Controllers
 
         public CustomerController()
         {
-
         }
 
         // GET: api/Customer
+        [HttpGet]
         public List<CustomerViewModel> Get()
         {
             using (var connection = new WebApiContext())
             {
-
                 var customer = connection.Customers.Select(cl => new CustomerViewModel()
                 {
+                    Id = cl.Id,
                     FirstName = cl.FirstName,
                     LastName = cl.LastName,
-                    Gender = cl.Gender,
-                    Functions = cl.Functions,
-                    Age = cl.Age,
-                    Salary = cl.Salary,
-                    HireDate = cl.HireDate
+                    Products = cl.Products.Select(o => new ProductViewModel()
+                    {
+                        Id = o.Id,
+                        Name = o.Name,
+                        Detail = o.Detail,
+                        Price = o.Price
+                    }).ToList()
                 }).ToList();
                 return customer;
-
             }
         }
 
         //GET: api/Customer/5
+        [HttpGet]
         public CustomerViewModel Get(int id)
         {
             using (var connection = new WebApiContext())
             {
-                var person = connection.Customers
+                var customer = connection.Customers
                     .FirstOrDefault(o => o.Id == id);
 
                 var customerViewModel = new CustomerViewModel()
                 {
-                    Id = person.Id,
-                    FirstName = person.FirstName,
-                    LastName = person.LastName,
-                    Gender = person.Gender,
-                    Functions = person.Functions,
-                    Age = person.Age,
-                    Salary = person.Salary,
-                    HireDate = person.HireDate
+                    Id = customer.Id,
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Products = customer.Products.Select(o => new ProductViewModel()
+                    {
+                        Id = o.Id,
+                        Name = o.Name,
+                        Detail = o.Detail,
+                        Price = o.Price
+                    }).ToList()
                 };
-
                 return customerViewModel;
             }
         }
@@ -71,40 +74,37 @@ namespace WebApi_v3.Controllers
             {
                 var customer = new Customer()
                 {
+                    Id = customerViewModel.Id,
                     FirstName = customerViewModel.FirstName,
                     LastName = customerViewModel.LastName,
-                    Gender = customerViewModel.Gender,
-                    Functions = customerViewModel.Functions,
-                    Age = customerViewModel.Age,
-                    Salary = customerViewModel.Salary,
-                    HireDate = customerViewModel.HireDate
+                    Products = customerViewModel.Products.Select(o => new Product()
+                    {
+                        Id = o.Id,
+                        Name = o.Name,
+                        Detail = o.Detail,
+                        Price = o.Price
+                    }).ToList()
                 };
 
                 context.Customers.Add(customer);
                 context.SaveChanges();
 
-
-                customerViewModel.Id = customer.Id;
-
-                return customerViewModel;
+                return Get(customer.Id);
             }
 
         }
 
-        // PUT: api/Customer/5        
+        // PUT: api/Customer/5 
+        [HttpPut]
         public CustomerViewModel Put(int id, [FromBody]CustomerViewModel customerViewModel)
         {
             using (var context = new WebApiContext())
             {
-                var customer = context.Employees.FirstOrDefault(o => o.Id == id);
+                var customer = context.Customers.FirstOrDefault(o => o.Id == id);
 
                 customer.FirstName = customerViewModel.FirstName;
                 customer.LastName = customerViewModel.LastName;
-                customer.Gender = customerViewModel.Gender;
-                customer.Functions = customerViewModel.Functions;
-                customer.Age = customerViewModel.Age;
-                customer.Salary = customerViewModel.Salary;
-                customer.HireDate = customerViewModel.HireDate;
+
 
                 context.Entry(customer).State = System.Data.Entity.EntityState.Modified;
                 context.SaveChanges();
@@ -124,4 +124,4 @@ namespace WebApi_v3.Controllers
             }
         }
     }
-}     
+}

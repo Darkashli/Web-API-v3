@@ -10,27 +10,25 @@ using System.Collections;
 using WebApi_v3.Models;
 using Newtonsoft.Json;
 
+
 namespace WebApi_v3.Controllers
 {
-
     public class EmployeeController : ApiController
     {
-
         public EmployeeController()
         {
-
         }
 
         //GET: api/Employee
-        public List<EmployeeViewModel> Get()
-        {
+        [HttpGet]
+         public List<EmployeeViewModel> Get()
+        {         
             using (var connection = new WebApiContext())
             {
-
                 var person = connection.Employees.Select(info => new EmployeeViewModel()
                 {
                     FirstName = info.FirstName,
-                    LastName = info.LastName,
+                    LastName = info.LastName, 
                     Gender = info.Gender,
                     Functions = info.Functions,
                     Age = info.Age,
@@ -42,8 +40,8 @@ namespace WebApi_v3.Controllers
             }
         }
 
-
         //GET: api/Employee/5
+        [HttpGet]
         public EmployeeViewModel Get(int id)
         {
             using (var connection = new WebApiContext())
@@ -62,7 +60,6 @@ namespace WebApi_v3.Controllers
                     Salary = person.Salary,
                     HireDate = person.HireDate
                 };
-
                 return employeeViewModel;
             }
         }
@@ -92,10 +89,10 @@ namespace WebApi_v3.Controllers
 
                 return employeeViewModel;
             }
-
         }
 
         // PUT: api/Employee/5
+        [HttpPut]
         public EmployeeViewModel Put(int id, [FromBody]EmployeeViewModel employeeViewModel)
         {
             using (var context = new WebApiContext())
@@ -112,12 +109,13 @@ namespace WebApi_v3.Controllers
 
                 context.Entry(employee).State = System.Data.Entity.EntityState.Modified;
                 context.SaveChanges();
-
-                return employeeViewModel;
+                var viewModel = Get(employee.Id);
+                return viewModel;
             }
         }
 
         // DELETE: api/Employee/5
+        [HttpDelete]
         public void Delete(int id)
         {
             using (var context = new WebApiContext())

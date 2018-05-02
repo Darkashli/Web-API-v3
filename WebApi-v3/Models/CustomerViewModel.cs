@@ -16,19 +16,7 @@ namespace WebApi_v3.Models
         [Required(ErrorMessage = "This field is required")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
-        public int? Gender { get; set; }
+        public List<ProductViewModel> Products { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
-        public int? Functions { get; set; }
-
-        [Required(ErrorMessage = "This field is required")]
-        public int? Age { get; set; }
-
-        [Required(ErrorMessage = "This field is required")]
-        public int? Salary { get; set; }
-
-        [Required(ErrorMessage = "This field is required")]
-        public DateTime? HireDate { get; set; }
     }
 }
